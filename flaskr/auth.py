@@ -3,6 +3,7 @@ import functools
 from flask import (
     Blueprint, flash, g, redirect, render_template, request, session, url_for,jsonify
 )
+
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from flaskr.db import get_db
@@ -38,10 +39,8 @@ def register():
         return jsonify({"error": error}), 400
     return jsonify({"message": "Register endpoint is available. Send a POST request with username and password."}), 200
 
-    
 
-
-@bp.route('/login', methods=('GET', 'POST'))
+@bp.route('/login', methods=('POST'))
 def login():
     if request.method == 'POST':
         data = request.get_json()  # Parse JSON from the request
@@ -53,7 +52,7 @@ def login():
             'SELECT * FROM user WHERE username = ?', (username,)
         ).fetchone()
 
-        if user is None:
+        if username is None:
             error = 'Incorrect username.'
         elif not check_password_hash(user['password'], password):
             error = 'Incorrect password.'
