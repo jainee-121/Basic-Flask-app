@@ -1,5 +1,5 @@
 from flask import (
-    Blueprint, flash, g, redirect, render_template, request, url_for,jsonify
+    Blueprint, flash, g, redirect, render_template, request, url_for,jsonify,
 )
 from werkzeug.exceptions import abort
 
@@ -23,7 +23,6 @@ def create():
         data = request.get_json()
         title = data.get('title')
         body = data.get('body')
-        error = None
 
         if not title:
             return jsonify({"error": "Title is required."}), 400
@@ -35,7 +34,6 @@ def create():
         )
         db.commit()
         return jsonify({"message": "Post created successfully."}), 201
-
 
 def get_post(id, check_author=True):
     post = get_db().execute(
@@ -56,7 +54,7 @@ def get_post(id, check_author=True):
 @bp.route('/<int:id>/update', methods=('PUT',))
 @login_required
 def update(id):
-    post = get_post(id)
+    get_post(id)# Check if the post exists and if the user has permissions.
     data = request.get_json()
     title = data.get('title')
     body = data.get('body')
